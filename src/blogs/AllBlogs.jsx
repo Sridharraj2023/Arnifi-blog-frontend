@@ -6,35 +6,33 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [filters, setFilters] = useState({ category: '', author: '' });
-  const loggedInUserId = localStorage.getItem('userId');  // <-- use userId here
+  const loggedInUserId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
-  const fetchBlogs = async () => {
-
-     const token = localStorage.getItem('token');
-    if (!token) {
-      toast.error('You must be logged in to view blogs');
-      return;
-    }
-
-    try {
-      const queryParams = new URLSearchParams();
-      if (filters.category) queryParams.append('category', filters.category);
-      if (filters.author) queryParams.append('author', filters.author);
-
-      const res = await axios.get(`https://arnifi-blog-backend-3s0g.onrender.com/api/blogs?${queryParams.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setBlogs(res.data);
-    } catch (err) {
-      console.error('Error fetching blogs:', err);
-      toast.error(err.response?.data?.message || 'Failed to fetch blogs');
-    }
-  };
-
   useEffect(() => {
+    const fetchBlogs = async () => {
+      if (!token) {
+        toast.error('You must be logged in to view blogs');
+        return;
+      }
+
+      try {
+        const queryParams = new URLSearchParams();
+        if (filters.category) queryParams.append('category', filters.category);
+        if (filters.author) queryParams.append('author', filters.author);
+
+        const res = await axios.get(`https://arnifi-blog-backend-3s0g.onrender.com/api/blogs?${queryParams.toString()}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setBlogs(res.data);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+        toast.error(err.response?.data?.message || 'Failed to fetch blogs');
+      }
+    };
+
     fetchBlogs();
-  }, [filters]);
+  }, [filters, token]); // include token to avoid stale token issues
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
@@ -44,7 +42,15 @@ const AllBlogs = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Blog deleted successfully!');
-      fetchBlogs();
+      // Refresh blogs after delete
+      const queryParams = new URLSearchParams();
+      if (filters.category) queryParams.append('category', filters.category);
+      if (filters.author) queryParams.append('author', filters.author);
+
+      const res = await axios.get(`https://arnifi-blog-backend-3s0g.onrender.com/api/blogs?${queryParams.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setBlogs(res.data);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to delete blog');
     }
@@ -103,7 +109,6 @@ const AllBlogs = () => {
                   {blog.content}
                 </div>
 
-                {/* Show Edit/Delete only if logged in user owns the blog */}
                 {blog.userId && blog.userId._id === loggedInUserId && (
                   <div className="mt-auto d-flex justify-content-between">
                     <button
