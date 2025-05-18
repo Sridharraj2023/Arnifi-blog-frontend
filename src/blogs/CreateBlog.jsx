@@ -17,7 +17,7 @@ const CreateBlog = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/blogs', inputs, {
+      await axios.post('https://arnifi-blog-backend-3s0g.onrender.com/api/blogs', inputs, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Blog created successfully!');
