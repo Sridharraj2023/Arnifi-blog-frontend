@@ -1,11 +1,11 @@
-Arnifi Blog
-This is a full-stack blogging application consisting of a React frontend and a Node.js/Express backend. The app allows users to create, edit, delete, and view blogs with features like filtering by category and author.
+#Arnifi Blog
+#This is a full-stack blogging application consisting of a React frontend and a Node.js/Express backend. The app allows users to create, edit, delete, and view blogs with features like filtering by category and author.
 
-Frontend
+#Frontend
 URL
 https://arnifiblog.netlify.app/
 
-Tech Stack
+#Tech Stack
 React.js
 
 React Router v6
