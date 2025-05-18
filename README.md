@@ -41,14 +41,8 @@ npm install
 
 3. Create a .env file in the root folder and add your backend API URL:
 
-ini
-Copy
-Edit
 REACT_APP_API_URL=https://arnifi-blog-backend-3s0g.onrender.com/api
 Start the development server:
 
-bash
-Copy
-Edit
 npm start
 Open http://localhost:3000 to view it in the browser.
